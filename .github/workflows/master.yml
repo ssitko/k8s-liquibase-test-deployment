@@ -8,12 +8,12 @@ jobs:
   migrate-database:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
       - name: Database migrations
         uses: ./.github/includes/actions/migrations
   deploy-appliaction:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
       - name: Application packaging & deployment
         uses: ./.github/includes/actions/deployment
