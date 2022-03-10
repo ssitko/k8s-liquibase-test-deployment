@@ -1,0 +1,7 @@
+name: "Deployment rollback"
+description: "Rollback action to address failing deployment"
+runs:
+  using: "composite"
+  steps:
+    - run: echo Rollback database migrate.
+      shell: bash
