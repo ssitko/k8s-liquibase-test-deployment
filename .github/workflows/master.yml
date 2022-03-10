@@ -5,12 +5,14 @@ on:
     branches: [master]
 
 jobs:
-  build:
+  migrate:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Migrate database changes
-        uses: ./.github/includes/actions/migrations
+      - uses: ./.github/includes/actions/migrations
 
-      - name: Build & Deploy the application
-        uses: ./.github/includes/actions/deployment
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: ./.github/includes/actions/deployment
