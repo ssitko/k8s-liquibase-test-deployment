@@ -1,9 +1,11 @@
-name: Call a reusable workflow and use its outputs
+name: Test
+description: "composite run action"
 
-on:
-  database-migrations:
-
-jobs:
-  runs-on: ubuntu-latest
+runs:
+  using: "composite"
   steps:
-    - run: echo "Migrate database!"
+    steps:
+      - name: Echo
+        shell: bash
+        run: |
+          echo Heyyyyy
