@@ -1,4 +1,1 @@
-- name: Database migration
-  description: "Migrate database schema using Liquibase"
-  runs:
-    run: echo "Migrate db!"
+- name: Migrations
