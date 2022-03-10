@@ -1,1 +1,4 @@
-- name: Migrations
+name: "Migrate database"
+description: "Performing database update whenever needed"
+runs:
+  run: echo "Migrate!"
