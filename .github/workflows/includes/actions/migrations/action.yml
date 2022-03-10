@@ -1,8 +1,6 @@
-name: hello-world
-on: push
+name: Call a reusable workflow and use its outputs
+
 jobs:
-  my-job:
-    runs-on: ubuntu-latest
-    steps:
-      - name: my-step
-        run: echo "Hello World!"
+  runs-on: ubuntu-latest
+  steps:
+    - run: echo "Migrate database"
