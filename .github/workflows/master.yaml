@@ -10,7 +10,7 @@ jobs:
 
     steps:
       - name: Migrate database changes
-      - uses: ./.github/includes/actions/migrations.yaml
+        uses: ./.github/includes/actions/migrations
 
       - name: Build & Deploy the application
-      - uses: ./.github/includes/actions/deployment.yaml
+        uses: ./.github/includes/actions/deployment
