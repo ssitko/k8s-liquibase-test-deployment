@@ -9,10 +9,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: ./.github/includes/actions/migrations
+      - uses: ./.github/includes/actions/migrations/action.yml
 
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: ./.github/includes/actions/deployment
+      - uses: ./.github/includes/actions/deployment/action.yml
