@@ -10,13 +10,13 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Database migrations
-        uses: ./.github/workflows/includes/actions/migrations
+        uses: ./.github/workflows/includes/actions/migrations/migrate.yml
   application-deployment:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
       - name: Application deployment
-        uses: ./.github/workflows/includes/actions/deploymentx
+        uses: ./.github/workflows/includes/actions/deployment/deploy.yml
       - name: Failure rollback
         if: ${{ failure() }}
         run: echo Failure!
