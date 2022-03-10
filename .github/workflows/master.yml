@@ -5,15 +5,9 @@ on:
     branches: [master]
 
 jobs:
-  migrate-database:
+  database-migrations:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v1
       - name: Database migrations
-        uses: /.github/includes/actions/migrations
-  deploy-appliaction:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Application packaging & deployment
-        uses: ./.github/includes/actions/deployment
+        uses: ./.github/workflows/includes/actions/migrations
