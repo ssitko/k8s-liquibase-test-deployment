@@ -1,0 +1,4 @@
+- name: Application packaging & deployment
+  description: "Build the app image & deploy it to the k8s cluster"
+  runs:
+    run: echo "Deploy the app!"

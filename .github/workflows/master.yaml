@@ -1,0 +1,16 @@
+name: Golang HTTP Server deployment with Liquibase migrations
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Migrate database changes
+        uses: ./.github/includes/actions/migrations.yaml
+
+      - name: Build & Deploy the application
+        uses: ./.github/includes/actions/deployment.yaml
