@@ -1,12 +1,6 @@
-name: "Hello World"
-description: "Greet someone"
-inputs:
-  who-to-greet: # id of input
-    description: "Who to greet"
-    required: true
-    default: "World"
+name: "Database Migrations"
+description: "Action to perform database schema updated (if needed)"
 runs:
-  using: "composite"
   steps:
     - run: echo Hello Migrations.
       shell: bash
