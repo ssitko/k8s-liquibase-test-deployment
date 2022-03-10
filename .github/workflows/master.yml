@@ -10,10 +10,10 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: Database migrations
-        uses: ./.github/includes/actions/migrations/action.yml
+        uses: ./.github/includes/actions/migrations
   deploy-appliaction:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
       - name: Application packaging & deployment
-        uses: ./.github/includes/actions/deployment/action.yml
+        uses: ./.github/includes/actions/deployment
