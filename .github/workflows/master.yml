@@ -12,11 +12,12 @@ jobs:
       - name: Database migrations
         uses: ./.github/workflows/includes/actions/migrations
   application-deployment:
+    needs: database-migrations
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
       - name: Application deployment
-        uses: ./.github/workflows/includes/actions/deployment
+        uses: ./.github/workflows/includes/actions/deploymentx
       - name: Failure rollback
         if: ${{ failure() }}
         uses: ./.github/workflows/includes/actions/rollback
