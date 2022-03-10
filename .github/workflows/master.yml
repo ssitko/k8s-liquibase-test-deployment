@@ -4,11 +4,18 @@ on:
   push:
     branches: [master]
 
-jobs:
-  - name: Migrate database
-    runs-on: ubuntu-latest
-    uses: ./.github/includes/actions/migrations/action.yml
+# jobs:
+#   - name: Migrate database
+#     runs-on: ubuntu-latest
+#     uses: ./.github/includes/actions/migrations/action.yml
 
-  - name: Application deployment
+#   - name: Application deployment
+#     runs-on: ubuntu-latest
+#     uses: ./.github/includes/actions/deployment/action.yml
+
+jobs:
+  migrate-database:
     runs-on: ubuntu-latest
-    uses: ./.github/includes/actions/deployment/action.yml
+    steps:
+      - name: Database migrations
+        uses: ./.github/includes/actions/migrations/action.yml
