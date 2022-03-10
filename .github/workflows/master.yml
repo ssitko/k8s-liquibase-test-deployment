@@ -16,4 +16,6 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Application deployment
-        uses: ./.github/workflows/includes/actions/deployment
+        uses: ./.github/workflows/includes/actions/deploymentx
+        if: ${{ failure() }}
+        run: echo Failure!
