@@ -1,6 +1,9 @@
 name: Call a reusable workflow and use its outputs
 
+on:
+  database-migrations:
+
 jobs:
   runs-on: ubuntu-latest
   steps:
-    - run: echo "Migrate database"
+    - run: echo "Migrate database!"
