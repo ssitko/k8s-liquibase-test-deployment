@@ -11,8 +11,14 @@ jobs:
       - uses: actions/checkout@v1
       - name: Database migrations
         uses: ./.github/workflows/includes/actions/migrations
+  infrastructure-setup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Setup GCP Bucket
+        uses: ./.github/workflows/includes/actions/infrastructure
   application-deployment:
-    needs: database-migrations
+    needs: [database-migrations, infrastructure-setup]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
