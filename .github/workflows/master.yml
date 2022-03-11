@@ -4,20 +4,30 @@ on:
   push:
     branches: [master]
 
+env:
+  PROJECT_ID: ${{ secrets.GKE_PROJECT }}
+  GKE_CLUSTER: test-cluster
+  GKE_ZONE: europe-central2-a
+  DEPLOYMENT_NAME: golang-test-deployment
+  IMAGE: golang-test
+
 jobs:
   database-migrations:
+    environment: dev
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
       - name: Database migrations
         uses: ./.github/workflows/includes/actions/migrations
   infrastructure-setup:
+    environment: dev
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
       - name: Setup GCP Bucket
         uses: ./.github/workflows/includes/actions/infrastructure
   application-deployment:
+    environment: dev
     needs: [database-migrations, infrastructure-setup]
     runs-on: ubuntu-latest
     steps:
