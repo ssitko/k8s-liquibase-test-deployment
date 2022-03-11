@@ -10,6 +10,7 @@ runs:
     # helper for authentication
     - run: |-
         gcloud --quiet auth configure-docker
+      shell: bash
 
     # Get the GKE credentials so we can deploy to the cluster
     - name: Getting GKE credentials
