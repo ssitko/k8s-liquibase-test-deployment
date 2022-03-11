@@ -4,16 +4,15 @@ runs:
   using: "composite"
   steps:
     # Setup gcloud CLI
+    - name: Setup gcloud CLI
     - uses: google-github-actions/setup-gcloud@94337306dda8180d967a56932ceb4ddcf01edae7
+      shell: bash
       with:
         service_account_key: ${{ secrets.GKE_SA_KEY }}
         project_id: ${{ secrets.GKE_PROJECT }}
 
-    # Configure Docker to use the gcloud command-line tool as a credential
-    # helper for authentication
-    - run: |-
-        gcloud --quiet auth configure-docker
-
     # Check if gcloud is set up correctly
+    - name: Verify if gcloud is set up correctly
+      shell: bash
     - run: |-
         gcloud auth list
