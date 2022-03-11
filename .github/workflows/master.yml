@@ -31,6 +31,21 @@ jobs:
     needs: [database-migrations, infrastructure-setup]
     runs-on: ubuntu-latest
     steps:
+      # Setup gcloud CLI
+      - name: Setup gcloud CLI
+      - uses: google-github-actions/setup-gcloud@94337306dda8180d967a56932ceb4ddcf01edae7
+        shell: bash
+        with:
+          service_account_key: ${{ secrets.GKE_SA_KEY }}
+          project_id: ${{ secrets.GKE_PROJECT }}
+
+      # Check if gcloud is set up correctly
+      - name: Verify if gcloud is set up correctly
+        shell: bash
+      - run: |-
+          gcloud auth list
+
+      # Use deployment composite action
       - uses: actions/checkout@v1
       - name: Application deployment
         uses: ./.github/workflows/includes/actions/deployment
