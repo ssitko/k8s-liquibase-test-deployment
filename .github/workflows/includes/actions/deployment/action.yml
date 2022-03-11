@@ -5,3 +5,8 @@ runs:
   steps:
     - run: echo Hello Deployment.
       shell: bash
+
+    # Configure Docker to use the gcloud command-line tool as a credential
+    # helper for authentication
+    - run: |-
+        gcloud --quiet auth configure-docker
