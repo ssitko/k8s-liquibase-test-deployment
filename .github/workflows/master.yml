@@ -43,8 +43,9 @@ jobs:
 
       # Configure Docker to use the gcloud command-line tool as a credential
       # helper for authentication
-      - run: |-
-          gcloud --quiet auth configure-docker
+      - name: Configure docker instance
+        run: |-
+          gcloudfail --quiet auth configure-docker
 
       # Get the GKE credentials so we can deploy to the cluster
       - name: Auth to GKE
@@ -67,3 +68,7 @@ jobs:
       - name: Publish
         run: |-
           docker push "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA"
+
+      - name: Rollback on fail
+        if: ${{ failure() }}
+        uses: ./.github/workflows/includes/actions/rollback
