@@ -3,16 +3,3 @@ description: "Action to build app image & deploy it to the k8s cluster"
 runs:
   using: "composite"
   steps:
-    # Configure Docker to use the gcloud command-line tool as a credential
-    # helper for authentication
-    - name: Docker setup
-    - run: |-
-        gcloud --quiet auth configure-docker
-      shell: bash
-
-    # Get the GKE credentials so we can deploy to the cluster
-    - name: Getting GKE credentials
-      with:
-        cluster_name: ${{ env.GKE_CLUSTER }}
-        location: ${{ env.GKE_ZONE }}
-        credentials: ${{ secrets.GKE_SA_KEY }}
