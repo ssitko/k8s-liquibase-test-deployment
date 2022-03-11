@@ -3,11 +3,9 @@ description: "Action to build app image & deploy it to the k8s cluster"
 runs:
   using: "composite"
   steps:
-    - run: echo Hello Deployment.
-      shell: bash
-
     # Configure Docker to use the gcloud command-line tool as a credential
     # helper for authentication
+    - name: Docker stup
     - run: |-
         gcloud --quiet auth configure-docker
       shell: bash
