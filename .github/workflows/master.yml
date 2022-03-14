@@ -25,15 +25,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@master
-        with:
-          project_id: ${{ env.PROJECT_ID }}
-          service_account_key: ${{ secrets.GKE_SA_KEY }}
-          export_default_credentials: true
 
+      # Auth to Google Cloud for Google SDK setup
+      - name: Auth to Google Cloud
+        uses: "google-github-actions/auth@v0"
+        with:
+          credentials_json: "${{ secrets.GKE_SA_KEY }}"
+
+      # # Setp Google Cloud SDK
+      - name: Set up Cloud SDK
+        uses: "google-github-actions/setup-gcloud@v0"
+
+      # Setup Logs dev bucket required for service to run
       - name: Create Logs dev bucket
-        run: gsutil ls -b "gs://$LOGS_BUCKET_NAME" || gsutil mb "gs://$LOGS_BUCKET_NAME"
+        run: gsutil ls -b "gs://$LOGS_BUCKET_NAME" || gsutil mb "gs://$LOGS_BUCKET_NAME" # TODO: add bucket params
 
   application-deployment:
     environment: dev
