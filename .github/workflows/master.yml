@@ -10,6 +10,7 @@ env:
   GKE_ZONE: europe-central2-a
   DEPLOYMENT_NAME: golang-test-deployment
   IMAGE: golang-test
+  LOGS_BUCKET_NAME: dev-logs-storage
 
 jobs:
   database-migrations:
@@ -23,9 +24,17 @@ jobs:
     environment: dev
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - name: Setup GCP Bucket
-        uses: ./.github/workflows/includes/actions/infrastructure
+      - uses: actions/checkout@v2
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+          service_account_key: ${{ secrets.GKE_SA_KEY }}
+          export_default_credentials: true
+
+      - name: Create Logs dev bucket
+        run: gsutil ls -b "gs://$LOGS_BUCKET_NAME" || gsutil mb "gs://$LOGS_BUCKET_NAME"
+
   application-deployment:
     environment: dev
     needs: [database-migrations, infrastructure-setup]
@@ -34,7 +43,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      # Setup gcloud CLI
+      # Setup gcloud CLI with deployment service account
       - name: Setup gcloud CLI
         uses: google-github-actions/setup-gcloud@94337306dda8180d967a56932ceb4ddcf01edae7
         with:
