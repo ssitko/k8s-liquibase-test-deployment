@@ -1,7 +1,0 @@
-name: "Infrastructure setup"
-description: "Action to create bucket on GCP needed for service"
-runs:
-  using: "composite"
-  steps:
-    - run: echo Hello Infrastructure.
-      shell: bash

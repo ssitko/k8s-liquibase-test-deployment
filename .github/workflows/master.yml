@@ -13,27 +13,32 @@ env:
   LOGS_BUCKET_NAME: dev-logs-storage
   LOGS_BUCKET_LOCATION: EUROPE-WEST3
   LOGS_BUCKET_STORAGE_CLASS: STANDARD
+  DB_NAME: sql11479020
 
 jobs:
   database-migrations:
     environment: dev
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # Migrate the database
       - name: Perform database migrations
         uses: liquibase/liquibase-github-action@v3
         with:
           operation: "update"
           classpath: "migrations/"
           changeLogFile: "db.changelog-master.yaml"
-          username: sql11479020
-          password: vAMXmDzwwV
-          url: jdbc:mysql://sql11.freesqldatabase.com:3306/sql11479020
+          username: ${{ secrets.DB_USERNAME }}
+          password: ${{ secrets.DB_PASSWORD }}
+          url: "jdbc:mysql://$secrets.DB_HOST:$DB_PORT/$DB_NAME"
   infrastructure-setup:
     environment: dev
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
       # Auth to Google Cloud for Google SDK setup
       - name: Auth to Google Cloud

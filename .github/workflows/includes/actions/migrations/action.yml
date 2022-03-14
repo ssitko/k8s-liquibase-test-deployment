@@ -1,7 +1,0 @@
-name: "Database Migrations"
-description: "Action to perform database schema updated (if needed)"
-runs:
-  using: "composite"
-  steps:
-    - run: echo Hello Migrations.
-      shell: bash

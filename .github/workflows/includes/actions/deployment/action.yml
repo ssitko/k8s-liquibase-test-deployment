@@ -1,5 +1,0 @@
-name: "Appliaction deployment"
-description: "Action to build app image & deploy it to the k8s cluster"
-runs:
-  using: "composite"
-  steps:
