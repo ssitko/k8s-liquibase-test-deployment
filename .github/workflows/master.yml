@@ -38,7 +38,7 @@ jobs:
 
       # Setup Logs dev bucket required for service to run
       - name: Create Logs dev bucket
-        run: gsutil ls -b "gs://$LOGS_BUCKET_NAME" || gsutil mb "gs://$LOGS_BUCKET_NAME" # TODO: add bucket params
+        run: gsutil ls -p ${{ env.PROJECT_ID }} -b "gs://$LOGS_BUCKET_NAME" || gsutil mb -c STANDARD -l EUROPE-WEST3	-p ${{ env.PROJECT_ID }} "gs://$LOGS_BUCKET_NAME"
 
   application-deployment:
     environment: dev
