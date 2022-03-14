@@ -19,9 +19,16 @@ jobs:
     environment: dev
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - name: Database migrations
-        uses: ./.github/workflows/includes/actions/migrations
+      - uses: actions/checkout@v2
+      - name: Perform database migrations
+        uses: liquibase/liquibase-github-action@v3
+        with:
+          operation: "update"
+          classpath: "migrations/"
+          changeLogFile: "db.changelog-master.yaml"
+          username: sql11479020
+          password: vAMXmDzwwV
+          url: jdbc:mysql://sql11.freesqldatabase.com:3306/sql11479020
   infrastructure-setup:
     environment: dev
     runs-on: ubuntu-latest

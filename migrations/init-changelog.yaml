@@ -1,0 +1,24 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: szymon.sitko
+      failOnError: true
+      changes:
+      - tagDatabase:  
+          tag: version.1.0
+      - createTable:  
+          tableName: person  
+          columns:  
+            -  column:  
+                name: id  
+                type: int
+                autoIncrement: true  
+                constraints:  
+                  primaryKey: true  
+                  nullable: false 
+            -  column:  
+                name: name
+                type: varchar(50)
+      rollback:
+        - sql:
+          sql: DROP TABLE person;
