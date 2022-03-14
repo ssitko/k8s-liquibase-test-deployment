@@ -61,7 +61,7 @@ jobs:
       # helper for authentication
       - name: Configure docker instance
         run: |-
-          gcloud --quiet auth configure-dockerfail
+          gcloud --quiet auth configure-docker
 
       # Get the GKE credentials so we can deploy to the cluster
       - name: Auth to GKE
