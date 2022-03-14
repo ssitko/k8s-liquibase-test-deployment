@@ -4,4 +4,4 @@ runs:
   using: "composite"
   steps:
     - run: echo Rollback database migrate.
-      shell: bash
+      shell: gcloud info

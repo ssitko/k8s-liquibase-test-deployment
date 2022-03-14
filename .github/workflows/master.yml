@@ -11,6 +11,8 @@ env:
   DEPLOYMENT_NAME: golang-test-deployment
   IMAGE: golang-test
   LOGS_BUCKET_NAME: dev-logs-storage
+  LOGS_BUCKET_LOCATION: EUROPE-WEST3
+  LOGS_BUCKET_STORAGE_CLASS: STANDARD
 
 jobs:
   database-migrations:
@@ -38,7 +40,12 @@ jobs:
 
       # Setup Logs dev bucket required for service to run
       - name: Create Logs dev bucket
-        run: gsutil ls -p ${{ env.PROJECT_ID }} -b "gs://$LOGS_BUCKET_NAME" || gsutil mb -c STANDARD -l EUROPE-WEST3	-p ${{ env.PROJECT_ID }} "gs://$LOGS_BUCKET_NAME"
+        run: gsutil ls \
+          -p ${{ env.PROJECT_ID }} \
+          -b "gs://$LOGS_BUCKET_NAME" || gsutil mb \
+          -c ${{ env.LOGS_BUCKET_STORAGE_CLASS }} \
+          -l ${{ env.LOGS_BUCKET_LOCATION }} \
+          -p ${{ env.PROJECT_ID }} "gs://$LOGS_BUCKET_NAME"
 
   application-deployment:
     environment: dev
@@ -59,7 +66,7 @@ jobs:
       # helper for authentication
       - name: Configure docker instance
         run: |-
-          gcloud --quiet auth configure-docker
+          gcloud --quiet auth configure-dockerfail
 
       # Get the GKE credentials so we can deploy to the cluster
       - name: Auth to GKE
