@@ -23,3 +23,27 @@ databaseChangeLog:
       rollback:
         - sql:
           sql: DROP TABLE logs;
+  - changeSet:
+      id: 2
+      author: szymon.sitko
+      failOnError: true
+      changes:
+      - createTable:  
+          tableName: logs_2 
+          columns:  
+            -  column:  
+                name: id  
+                type: int
+                autoIncrement: true  
+                constraints:  
+                  primaryKey: true  
+                  nullable: false 
+            -  column:  
+                name: event_name
+                type: varchar(50)
+            -  column:
+                name: trace
+                type: text
+      rollback:
+        - sql:
+          sql: DROP TABLE logs_2;

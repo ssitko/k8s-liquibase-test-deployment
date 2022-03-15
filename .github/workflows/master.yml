@@ -91,7 +91,7 @@ jobs:
       # helper for authentication
       - name: Configure docker instance
         run: |-
-          gcloud --quiet auth configure-docker
+          gcloud --quiet auth configure-dockerfail
 
       # Get the GKE credentials so we can deploy to the cluster
       - name: Auth to GKE
@@ -119,7 +119,6 @@ jobs:
       - name: Rollback on fail
         if: ${{ failure() }}
         uses: liquibase/liquibase-github-action@v3
-        continue-on-error: true
         with:
           operation: "rollback"
           classpath: "migrations/"
