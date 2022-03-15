@@ -34,7 +34,7 @@ jobs:
       - name: Perform database migrations
         uses: liquibase/liquibase-github-action@v3
         with:
-          operation: "update"
+          operation: "updateToTag"
           classpath: "migrations/"
           tag: ${{ steps.migration_hash_tag_assignment.outputs.migration_hash }}
           changeLogFile: "db.changelog-master.yaml"

@@ -64,3 +64,24 @@ databaseChangeLog:
       rollback:
         - sql:
           sql: DROP TABLE car;
+  - changeSet:
+      id: 4
+      author: szymon.sitko
+      failOnError: true
+      changes:
+      - createTable:  
+          tableName: bike
+          columns:  
+            -  column:  
+                name: id  
+                type: int
+                autoIncrement: true  
+                constraints:  
+                  primaryKey: true  
+                  nullable: false 
+            -  column:  
+                name: brand
+                type: varchar(50)
+      rollback:
+        - sql:
+          sql: DROP TABLE bike;
