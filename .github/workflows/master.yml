@@ -29,7 +29,7 @@ jobs:
       # Assign the tag
       - name: Assign previous migration tag
         id: previous_migration_hash_tag_assignment
-        run: echo "::set-output name=previous_migration_hash::1"
+        run: echo "::set-output name=previous_migration_hash::$(echo $RANDOM | md5sum | head -c 20; echo;)"
 
       - name: Assign current migration tag
         id: current_migration_hash_tag_assignment
@@ -55,14 +55,14 @@ jobs:
           password: ${{ secrets.DB_PASSWORD }}
           url: "jdbc:mysql://${{ secrets.DB_HOST }}:${{ secrets.DB_PORT }}/${{ env.DB_NAME }}"
 
-      - name: Tag migration
-        uses: liquibase/liquibase-github-action@v3
-        with:
-          operation: "tag"
-          tag: ${{ steps.current_migration_hash_tag_assignment.outputs.current_migration_hash }}
-          username: ${{ secrets.DB_USERNAME }}
-          password: ${{ secrets.DB_PASSWORD }}
-          url: "jdbc:mysql://${{ secrets.DB_HOST }}:${{ secrets.DB_PORT }}/${{ env.DB_NAME }}"
+      # - name: Tag migration
+      #   uses: liquibase/liquibase-github-action@v3
+      #   with:
+      #     operation: "tag"
+      #     tag: ${{ steps.current_migration_hash_tag_assignment.outputs.current_migration_hash }}
+      #     username: ${{ secrets.DB_USERNAME }}
+      #     password: ${{ secrets.DB_PASSWORD }}
+      #     url: "jdbc:mysql://${{ secrets.DB_HOST }}:${{ secrets.DB_PORT }}/${{ env.DB_NAME }}"
 
   infrastructure-setup:
     environment: dev
