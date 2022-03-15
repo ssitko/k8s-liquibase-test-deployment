@@ -108,6 +108,7 @@ jobs:
       - name: Rollback on fail
         if: ${{ failure() }}
         uses: liquibase/liquibase-github-action@v3
+        continue-on-error: true
         with:
           operation: "rollback"
           classpath: "migrations/"
