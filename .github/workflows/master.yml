@@ -28,7 +28,7 @@ jobs:
       # Assign the datestamp
       - name: Assign workflow starting datestamp
         id: migration_hash_tag_assignment
-        run: echo "::set-output name=migration_hash::$(uuidgen)"
+        run: echo "::set-output name=migration_hash::$(echo -n $1 | md5sum | awk '{ print $1 }')"
 
       # Migrate the database
       - name: Perform database migrations
