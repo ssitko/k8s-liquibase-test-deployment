@@ -103,4 +103,4 @@ jobs:
 
       - name: Rollback on fail
         if: ${{ failure() }}
-        run: echo $WORKFLOW_RUN_DATESTAMP
+        run: echo "$WORKFLOW_RUN_DATESTAMP"
