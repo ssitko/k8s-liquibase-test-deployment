@@ -110,7 +110,7 @@ jobs:
         with:
           operation: "rollbackToDate"
           classpath: "migrations/"
-          date: ${{ needs.database-migrations.outputs.workflow_run_datestamp }}
+          date: "${{ needs.database-migrations.outputs.workflow_run_datestamp }}"
           changeLogFile: "db.changelog-master.yaml"
           username: ${{ secrets.DB_USERNAME }}
           password: ${{ secrets.DB_PASSWORD }}
