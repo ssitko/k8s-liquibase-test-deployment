@@ -28,7 +28,7 @@ jobs:
       # Assign the datestamp
       - name: Assign workflow starting datestamp
         id: datestamp_assignment
-        run: echo "workflow_run_datestamp=$(date '+%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
+        run: echo "::set-output name=workflow_run_datestamp::$(date '+%Y-%m-%d %H:%M:%S')"
 
       # Migrate the database
       - name: Perform database migrations
