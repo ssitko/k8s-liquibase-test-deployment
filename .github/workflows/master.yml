@@ -110,8 +110,8 @@ jobs:
         with:
           operation: "rollbackToDate"
           classpath: "migrations/"
-          date: "${{ needs.database-migrations.outputs.workflow_run_datestamp }}"
           changeLogFile: "db.changelog-master.yaml"
+          date: "${{ needs.database-migrations.outputs.workflow_run_datestamp }}"
           username: ${{ secrets.DB_USERNAME }}
           password: ${{ secrets.DB_PASSWORD }}
           url: "jdbc:mysql://${{ secrets.DB_HOST }}:${{ secrets.DB_PORT }}/${{ env.DB_NAME }}"
