@@ -34,13 +34,22 @@ jobs:
       - name: Perform database migrations
         uses: liquibase/liquibase-github-action@v3
         with:
-          operation: "updateToTag"
+          operation: "update"
           classpath: "migrations/"
-          tag: ${{ steps.migration_hash_tag_assignment.outputs.migration_hash }}
           changeLogFile: "db.changelog-master.yaml"
           username: ${{ secrets.DB_USERNAME }}
           password: ${{ secrets.DB_PASSWORD }}
           url: "jdbc:mysql://${{ secrets.DB_HOST }}:${{ secrets.DB_PORT }}/${{ env.DB_NAME }}"
+
+      - name: Tag migration
+        uses: liquibase/liquibase-github-action@v3
+        with:
+          operation: "tag"
+          tag: ${{ steps.migration_hash_tag_assignment.outputs.migration_hash }}
+          username: ${{ secrets.DB_USERNAME }}
+          password: ${{ secrets.DB_PASSWORD }}
+          url: "jdbc:mysql://${{ secrets.DB_HOST }}:${{ secrets.DB_PORT }}/${{ env.DB_NAME }}"
+
   infrastructure-setup:
     environment: dev
     runs-on: ubuntu-latest

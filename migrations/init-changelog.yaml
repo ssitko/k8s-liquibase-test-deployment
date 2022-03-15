@@ -85,3 +85,24 @@ databaseChangeLog:
       rollback:
         - sql:
           sql: DROP TABLE bike;
+  - changeSet:
+      id: 5
+      author: szymon.sitko
+      failOnError: true
+      changes:
+      - createTable:  
+          tableName: tree
+          columns:  
+            -  column:  
+                name: id  
+                type: int
+                autoIncrement: true  
+                constraints:  
+                  primaryKey: true  
+                  nullable: false 
+            -  column:  
+                name: name
+                type: varchar(50)
+      rollback:
+        - sql:
+          sql: DROP TABLE tree;
