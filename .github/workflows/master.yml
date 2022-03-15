@@ -28,7 +28,7 @@ jobs:
       # Assign the datestamp
       - name: Assign workflow starting datestamp
         id: migration_hash_tag_assignment
-        run: echo "::set-output name=migration_hash::123"
+        run: echo "::set-output name=migration_hash::$(echo -n $(date) | sha256sum)"
 
       # Migrate the database
       - name: Perform database migrations
