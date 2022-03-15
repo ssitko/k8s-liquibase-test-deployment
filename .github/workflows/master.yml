@@ -39,7 +39,7 @@ jobs:
         uses: liquibase/liquibase-github-action@v3
         with:
           operation: "tag"
-          tag: ${{ steps.previous_migration_hash_tag_assignment.outputs.migration_hash }}
+          tag: ${{ steps.previous_migration_hash_tag_assignment.outputs.previous_migration_hash }}
           username: ${{ secrets.DB_USERNAME }}
           password: ${{ secrets.DB_PASSWORD }}
           url: "jdbc:mysql://${{ secrets.DB_HOST }}:${{ secrets.DB_PORT }}/${{ env.DB_NAME }}"
@@ -59,7 +59,7 @@ jobs:
         uses: liquibase/liquibase-github-action@v3
         with:
           operation: "tag"
-          tag: ${{ steps.current_migration_hash_tag_assignment.outputs.migration_hash }}
+          tag: ${{ steps.current_migration_hash_tag_assignment.outputs.current_migration_hash }}
           username: ${{ secrets.DB_USERNAME }}
           password: ${{ secrets.DB_PASSWORD }}
           url: "jdbc:mysql://${{ secrets.DB_HOST }}:${{ secrets.DB_PORT }}/${{ env.DB_NAME }}"
