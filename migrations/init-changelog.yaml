@@ -43,3 +43,24 @@ databaseChangeLog:
       rollback:
         - sql:
           sql: DROP TABLE pet;
+  - changeSet:
+      id: 3
+      author: szymon.sitko
+      failOnError: true
+      changes:
+      - createTable:  
+          tableName: car  
+          columns:  
+            -  column:  
+                name: id  
+                type: int
+                autoIncrement: true  
+                constraints:  
+                  primaryKey: true  
+                  nullable: false 
+            -  column:  
+                name: make
+                type: varchar(50)
+      rollback:
+        - sql:
+          sql: DROP TABLE car;
