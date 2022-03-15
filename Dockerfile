@@ -1,10 +1,16 @@
 # syntax=docker/dockerfile:1
-FROM debian:latest
+FROM golang:1.16-alpine
 
 WORKDIR /app
 
-COPY . .
+COPY go.mod ./
 
-CMD ["./kubernetes-gh-k8s"]
+RUN go mod download
 
-EXPOSE 8090
+COPY *.go ./
+
+RUN go build
+
+EXPOSE 8080
+
+CMD [ "/kubernetes-gh-k8s" ]
