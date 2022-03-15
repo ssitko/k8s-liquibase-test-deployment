@@ -19,13 +19,16 @@ jobs:
   database-migrations:
     environment: dev
     runs-on: ubuntu-latest
+    outputs:
+      workflow_run_datestamp: ${{ steps.datestamp_assignment.outputs.workflow_run_datestamp }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
       # Assign the datestamp
       - name: Assign workflow starting datestamp
-        run: echo "WORKFLOW_RUN_DATESTAMP=$(date '+%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
+        id: datestamp_assignment
+        run: echo "workflow_run_datestamp=$(date '+%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
 
       # Migrate the database
       - name: Perform database migrations
@@ -103,4 +106,4 @@ jobs:
 
       - name: Rollback on fail
         if: ${{ failure() }}
-        run: echo '$WORKFLOW_RUN_DATESTAMP'
+        run: echo ${{ needs.database-migrations.outputs.workflow_run_datestamp }}
