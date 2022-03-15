@@ -20,15 +20,15 @@ jobs:
     environment: dev
     runs-on: ubuntu-latest
     outputs:
-      workflow_run_datestamp: ${{ steps.datestamp_assignment.outputs.workflow_run_datestamp }}
+      migration_hash: ${{ steps.migration_hash_tag_assignment.outputs.migration_hash }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
       # Assign the datestamp
       - name: Assign workflow starting datestamp
-        id: datestamp_assignment
-        run: echo "::set-output name=workflow_run_datestamp::$(date '+%Y-%m-%d %H:%M:%S')"
+        id: migration_hash_tag_assignment
+        run: echo "::set-output name=migration_hash::$(echo -n $(date) | sha256sum)"
 
       # Migrate the database
       - name: Perform database migrations
@@ -36,6 +36,7 @@ jobs:
         with:
           operation: "update"
           classpath: "migrations/"
+          tag: ${{ needs.database-migrations.outputs.workflow_run_datestamp }}
           changeLogFile: "db.changelog-master.yaml"
           username: ${{ secrets.DB_USERNAME }}
           password: ${{ secrets.DB_PASSWORD }}
@@ -108,10 +109,10 @@ jobs:
         if: ${{ failure() }}
         uses: liquibase/liquibase-github-action@v3
         with:
-          operation: "rollbackToDate"
+          operation: "rollback"
           classpath: "migrations/"
           changeLogFile: "db.changelog-master.yaml"
-          date: "${{ needs.database-migrations.outputs.workflow_run_datestamp }}"
+          tag: ${{ needs.database-migrations.outputs.workflow_run_datestamp }}
           username: ${{ secrets.DB_USERNAME }}
           password: ${{ secrets.DB_PASSWORD }}
           url: "jdbc:mysql://${{ secrets.DB_HOST }}:${{ secrets.DB_PORT }}/${{ env.DB_NAME }}"
