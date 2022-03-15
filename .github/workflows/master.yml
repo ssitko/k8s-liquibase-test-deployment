@@ -106,4 +106,12 @@ jobs:
 
       - name: Rollback on fail
         if: ${{ failure() }}
-        run: echo ${{ needs.database-migrations.outputs.workflow_run_datestamp }}
+        uses: liquibase/liquibase-github-action@v3
+        with:
+          operation: "rollbackToDate"
+          classpath: "migrations/"
+          date: ${{ needs.database-migrations.outputs.workflow_run_datestamp }}
+          changeLogFile: "db.changelog-master.yaml"
+          username: ${{ secrets.DB_USERNAME }}
+          password: ${{ secrets.DB_PASSWORD }}
+          url: "jdbc:mysql://${{ secrets.DB_HOST }}:${{ secrets.DB_PORT }}/${{ env.DB_NAME }}"
