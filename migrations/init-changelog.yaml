@@ -4,8 +4,6 @@ databaseChangeLog:
       author: szymon.sitko
       failOnError: true
       changes:
-      - tagDatabase:  
-          tag: version.1.0
       - createTable:  
           tableName: person  
           columns:  
@@ -22,3 +20,17 @@ databaseChangeLog:
       rollback:
         - sql:
           sql: DROP TABLE person;
+  - changeSet:
+      id: 2
+      author: szymon.sitko
+      failOnError: true
+      changes:
+      - addColumn:
+          tableName: person
+          columns:
+          - column:
+            name: middlename
+            type: varchar(50)
+      rollback:
+        - sql:
+          sql: ALTER TABLE person DROP COLUMN middlename;
