@@ -148,3 +148,24 @@ databaseChangeLog:
       rollback:
         - sql:
           sql: DROP TABLE fruit;
+  - changeSet:
+      id: 8
+      author: szymon.sitko
+      failOnError: true
+      changes:
+      - createTable:  
+          tableName: vegetable
+          columns:  
+            -  column:  
+                name: id  
+                type: int
+                autoIncrement: true  
+                constraints:  
+                  primaryKey: true  
+                  nullable: false 
+            -  column:  
+                name: name
+                type: varchar(50)
+      rollback:
+        - sql:
+          sql: DROP TABLE vegetable;

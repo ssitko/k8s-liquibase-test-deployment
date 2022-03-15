@@ -29,11 +29,11 @@ jobs:
       # Assign the tag
       - name: Assign previous migration tag
         id: previous_migration_hash_tag_assignment
-        run: echo "::set-output name=previous_migration_hash::$(echo -n $1 | md5sum | awk '{ print $1 }')"
+        run: echo "::set-output name=previous_migration_hash::$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 10 | head -n 1)"
 
       - name: Assign current migration tag
         id: current_migration_hash_tag_assignment
-        run: echo "::set-output name=current_migration_hash::$(echo -n $1 | md5sum | awk '{ print $1 }')"
+        run: echo "::set-output name=current_migration_hash::$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 10 | head -n 1)"
 
       - name: Tag migration
         uses: liquibase/liquibase-github-action@v3
