@@ -25,12 +25,19 @@ databaseChangeLog:
       author: szymon.sitko
       failOnError: true
       changes:
-      - addColumn:
-          tableName: person
-          columns:
-          - column:
-            name: middlename
-            type: varchar(50)
+      - createTable:  
+          tableName: pet  
+          columns:  
+            -  column:  
+                name: id  
+                type: int
+                autoIncrement: true  
+                constraints:  
+                  primaryKey: true  
+                  nullable: false 
+            -  column:  
+                name: name
+                type: varchar(50)
       rollback:
         - sql:
-          sql: ALTER TABLE person DROP COLUMN middlename;
+          sql: DROP TABLE pet;
