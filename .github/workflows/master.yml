@@ -30,7 +30,7 @@ jobs:
         id: migration_hash_tag_assignment
         run: echo "::set-output name=migration_hash::$(echo $RANDOM | md5sum | head -c 20; echo;)"
 
-      # Tag previous migration
+      # Tag previous migration for rollback reference
       - name: Tag previous migration
         uses: liquibase/liquibase-github-action@v3
         with:
@@ -40,7 +40,7 @@ jobs:
           password: ${{ secrets.DB_PASSWORD }}
           url: "jdbc:mysql://${{ secrets.DB_HOST }}:${{ secrets.DB_PORT }}/${{ env.DB_NAME }}"
 
-      # Migrate the database
+      # Migrate the database against changelog file
       - name: Perform database migrations
         uses: liquibase/liquibase-github-action@v3
         with:
@@ -91,7 +91,7 @@ jobs:
       # helper for authentication
       - name: Configure docker instance
         run: |-
-          gcloud --quiet auth configure-dockerfail
+          gcloud --quiet auth configure-docker
 
       # Get the GKE credentials so we can deploy to the cluster
       - name: Auth to GKE
@@ -115,6 +115,7 @@ jobs:
         run: |-
           docker push "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA"
 
+      # Rollback database changes on app deployment failure
       - name: Rollback on fail
         if: ${{ failure() }}
         uses: liquibase/liquibase-github-action@v3
