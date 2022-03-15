@@ -30,17 +30,13 @@ jobs:
         id: migration_hash_tag_assignment
         run: echo "::set-output name=migration_hash::$(echo -n $1 | md5sum | awk '{ print $1 }')"
 
-      # Echo db migrations tag\
-      - name: Echo tag
-        run: echo ${{ steps.migration_hash_tag_assignment.outputs.migration_hash }}
-
       # Migrate the database
       - name: Perform database migrations
         uses: liquibase/liquibase-github-action@v3
         with:
           operation: "update"
           classpath: "migrations/"
-          tag: ${{ needs.database-migrations.outputs.migration_hash }}
+          tag: ${{ steps.migration_hash_tag_assignment.outputs.migration_hash }}
           changeLogFile: "db.changelog-master.yaml"
           username: ${{ secrets.DB_USERNAME }}
           password: ${{ secrets.DB_PASSWORD }}
