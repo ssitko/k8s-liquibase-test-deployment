@@ -106,3 +106,24 @@ databaseChangeLog:
       rollback:
         - sql:
           sql: DROP TABLE tree;
+  - changeSet:
+      id: 6
+      author: szymon.sitko
+      failOnError: true
+      changes:
+      - createTable:  
+          tableName: book
+          columns:  
+            -  column:  
+                name: id  
+                type: int
+                autoIncrement: true  
+                constraints:  
+                  primaryKey: true  
+                  nullable: false 
+            -  column:  
+                name: name
+                type: varchar(50)
+      rollback:
+        - sql:
+          sql: DROP TABLE book;
