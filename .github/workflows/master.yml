@@ -20,21 +20,26 @@ jobs:
     environment: dev
     runs-on: ubuntu-latest
     outputs:
-      migration_hash: ${{ steps.migration_hash_tag_assignment.outputs.migration_hash }}
+      previous_migration_hash: ${{ steps.previous_migration_hash_tag_assignment.outputs.previous_migration_hash }}
+      current_migration_hash: ${{ steps.current_migration_hash_tag_assignment.outputs.current_migration_hash }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      # Assign the datestamp
-      - name: Assign workflow starting datestamp
-        id: migration_hash_tag_assignment
-        run: echo "::set-output name=migration_hash::$(echo -n $1 | md5sum | awk '{ print $1 }')"
+      # Assign the tag
+      - name: Assign previous migration tag
+        id: previous_migration_hash_tag_assignment
+        run: echo "::set-output name=previous_migration_hash::$(echo -n $1 | md5sum | awk '{ print $1 }')"
+
+      - name: Assign current migration tag
+        id: current_migration_hash_tag_assignment
+        run: echo "::set-output name=current_migration_hash::$(echo -n $1 | md5sum | awk '{ print $1 }')"
 
       - name: Tag migration
         uses: liquibase/liquibase-github-action@v3
         with:
           operation: "tag"
-          tag: ${{ steps.migration_hash_tag_assignment.outputs.migration_hash }}
+          tag: ${{ steps.previous_migration_hash_tag_assignment.outputs.migration_hash }}
           username: ${{ secrets.DB_USERNAME }}
           password: ${{ secrets.DB_PASSWORD }}
           url: "jdbc:mysql://${{ secrets.DB_HOST }}:${{ secrets.DB_PORT }}/${{ env.DB_NAME }}"
@@ -54,7 +59,7 @@ jobs:
         uses: liquibase/liquibase-github-action@v3
         with:
           operation: "tag"
-          tag: ${{ steps.migration_hash_tag_assignment.outputs.migration_hash }}
+          tag: ${{ steps.current_migration_hash_tag_assignment.outputs.migration_hash }}
           username: ${{ secrets.DB_USERNAME }}
           password: ${{ secrets.DB_PASSWORD }}
           url: "jdbc:mysql://${{ secrets.DB_HOST }}:${{ secrets.DB_PORT }}/${{ env.DB_NAME }}"
@@ -131,7 +136,7 @@ jobs:
           operation: "rollback"
           classpath: "migrations/"
           changeLogFile: "db.changelog-master.yaml"
-          tag: ${{ needs.database-migrations.outputs.migration_hash }}
+          tag: ${{ needs.database-migrations.outputs.previous_migration_hash }}
           username: ${{ secrets.DB_USERNAME }}
           password: ${{ secrets.DB_PASSWORD }}
           url: "jdbc:mysql://${{ secrets.DB_HOST }}:${{ secrets.DB_PORT }}/${{ env.DB_NAME }}"
