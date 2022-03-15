@@ -6,8 +6,6 @@ on:
 
 env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
-  DB_HOST: ${{ secrets.DB_HOST }}
-  DB_PORT: ${{ secrets.DB_PORT }}
   GKE_CLUSTER: test-cluster
   GKE_ZONE: europe-central2-a
   DEPLOYMENT_NAME: golang-test-deployment
@@ -38,7 +36,7 @@ jobs:
           changeLogFile: "db.changelog-master.yaml"
           username: ${{ secrets.DB_USERNAME }}
           password: ${{ secrets.DB_PASSWORD }}
-          url: "jdbc:mysql://$DB_HOST:$DB_PORT/$DB_NAME"
+          url: "jdbc:mysql://${{ secrets.DB_HOST }}:${{ secrets.DB_PORT }}/$DB_NAME"
   infrastructure-setup:
     environment: dev
     runs-on: ubuntu-latest
