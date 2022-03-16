@@ -51,7 +51,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Migrate database, setup infrastructure for service & deploy to GKE
-        run: echo Setup & Deploy!
+        run: echo "Setup & Deploy!"
 
   # database-migrations:
   #   environment: dev
