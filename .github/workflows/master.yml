@@ -61,8 +61,6 @@ jobs:
     environment: dev
     runs-on: ubuntu-latest
     needs: build
-    outputs:
-      migration_tag: ${{ steps.migration_tag_assignment.outputs.migration_tag }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -70,14 +68,14 @@ jobs:
       # Assign the migration tag
       - name: Assign migration tag
         id: migration_tag_assignment
-        run: echo "::set-output name=migration_tag::$(echo $RANDOM | md5sum | head -c 20; echo;)"
+        run: echo "MIGRATION_TAG=$(echo $RANDOM | md5sum | head -c 20; echo;)" >> $GITHUB_ENV
 
       # Tag previous migration for rollback reference
       - name: Tag previous migration
         uses: liquibase/liquibase-github-action@v3
         with:
           operation: "tag"
-          tag: ${{ steps.migration_tag_assignment.outputs.migration_tag }}
+          tag: $MIGRATION_TAG
           username: ${{ secrets.DB_USERNAME }}
           password: ${{ secrets.DB_PASSWORD }}
           url: "jdbc:mysql://${{ secrets.DB_HOST }}:${{ secrets.DB_PORT }}/${{ env.DB_NAME }}"
@@ -134,7 +132,7 @@ jobs:
           operation: "rollback"
           classpath: "migrations/"
           changeLogFile: "db.changelog-master.yaml"
-          tag: ${{ needs.deploy.outputs.migration_tag }}
+          tag: $MIGRATION_TAG
           username: ${{ secrets.DB_USERNAME }}
           password: ${{ secrets.DB_PASSWORD }}
           url: "jdbc:mysql://${{ secrets.DB_HOST }}:${{ secrets.DB_PORT }}/${{ env.DB_NAME }}"
