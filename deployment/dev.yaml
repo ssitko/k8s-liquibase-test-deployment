@@ -38,7 +38,7 @@ spec:
     spec:
       containers:
         - name: golang-http-test-app
-          image: gcr.io/pipeline-317919/golang-test
+          image: gcr.io/pipeline-317919/golang-test:9377261a6ad4ccc3e9d8ed2956a0f7d3d4504e89
           ports:
             - containerPort: 8090
           resources:
