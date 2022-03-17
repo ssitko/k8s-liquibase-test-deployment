@@ -19,6 +19,8 @@ jobs:
   build:
     environment: dev
     runs-on: ubuntu-latest
+    outputs:
+      github_sha: ${{ steps.github_sha_assignment.outputs.github_sha }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -45,6 +47,11 @@ jobs:
             --build-arg GITHUB_REF="$GITHUB_REF" \
             .
 
+      # Assign the migration tag
+      - name: Assign github sha
+        id: github_sha_assignment
+        run: echo "::set-output name=github_sha::$GITHUB_SHA"
+
       # Push the Docker image to Google Container Registry
       - name: Publish
         run: |-
@@ -53,6 +60,7 @@ jobs:
   deploy:
     environment: dev
     runs-on: ubuntu-latest
+    needs: build
     outputs:
       migration_hash: ${{ steps.migration_hash_tag_assignment.outputs.migration_hash }}
     steps:
@@ -105,6 +113,10 @@ jobs:
           cluster_name: ${{ env.GKE_CLUSTER }}
           location: ${{ env.GKE_ZONE }}
           credentials: ${{ secrets.GKE_SA_KEY }}
+
+      # Update image hash reference
+      - name: Update image hash
+        run: echo ${{ needs.build.outputs.github_sha }}
 
       # Deploy the app
       - name: Deploy the app to kubernetes
