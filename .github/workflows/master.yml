@@ -50,124 +50,68 @@ jobs:
         run: |-
           docker push "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA"
 
-  deploy: # TODO: Implement
+  deploy:
     environment: dev
     runs-on: ubuntu-latest
+    outputs:
+      migration_hash: ${{ steps.migration_hash_tag_assignment.outputs.migration_hash }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Migrate database, setup infrastructure for service & deploy to GKE
-        run: echo "Setup & Deploy!"
+      # Assign the migration tag
+      - name: Assign migration tag
+        id: migration_hash_tag_assignment
+        run: echo "::set-output name=migration_hash::$(echo $RANDOM | md5sum | head -c 20; echo;)"
 
-  # database-migrations:
-  #   environment: dev
-  #   runs-on: ubuntu-latest
-  #   outputs:
-  #     migration_hash: ${{ steps.migration_hash_tag_assignment.outputs.migration_hash }}
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v2
+      # Tag previous migration for rollback reference
+      - name: Tag previous migration
+        uses: liquibase/liquibase-github-action@v3
+        with:
+          operation: "tag"
+          tag: ${{ steps.migration_hash_tag_assignment.outputs.migration_hash }}
+          username: ${{ secrets.DB_USERNAME }}
+          password: ${{ secrets.DB_PASSWORD }}
+          url: "jdbc:mysql://${{ secrets.DB_HOST }}:${{ secrets.DB_PORT }}/${{ env.DB_NAME }}"
 
-  #     # Assign the tag
-  #     - name: Assign migration tag
-  #       id: migration_hash_tag_assignment
-  #       run: echo "::set-output name=migration_hash::$(echo $RANDOM | md5sum | head -c 20; echo;)"
+      # Migrate the database against changelog file
+      - name: Perform database migrations
+        uses: liquibase/liquibase-github-action@v3
+        with:
+          operation: "update"
+          classpath: "migrations/"
+          changeLogFile: "db.changelog-master.yaml"
+          username: ${{ secrets.DB_USERNAME }}
+          password: ${{ secrets.DB_PASSWORD }}
+          url: "jdbc:mysql://${{ secrets.DB_HOST }}:${{ secrets.DB_PORT }}/${{ env.DB_NAME }}"
 
-  #     # Tag previous migration for rollback reference
-  #     - name: Tag previous migration
-  #       uses: liquibase/liquibase-github-action@v3
-  #       with:
-  #         operation: "tag"
-  #         tag: ${{ steps.migration_hash_tag_assignment.outputs.migration_hash }}
-  #         username: ${{ secrets.DB_USERNAME }}
-  #         password: ${{ secrets.DB_PASSWORD }}
-  #         url: "jdbc:mysql://${{ secrets.DB_HOST }}:${{ secrets.DB_PORT }}/${{ env.DB_NAME }}"
+      # Auth to Google Cloud for Google SDK setup
+      - name: Auth to Google Cloud
+        uses: "google-github-actions/auth@v0"
+        with:
+          credentials_json: "${{ secrets.GKE_SA_KEY }}"
 
-  #     # Migrate the database against changelog file
-  #     - name: Perform database migrations
-  #       uses: liquibase/liquibase-github-action@v3
-  #       with:
-  #         operation: "update"
-  #         classpath: "migrations/"
-  #         changeLogFile: "db.changelog-master.yaml"
-  #         username: ${{ secrets.DB_USERNAME }}
-  #         password: ${{ secrets.DB_PASSWORD }}
-  #         url: "jdbc:mysql://${{ secrets.DB_HOST }}:${{ secrets.DB_PORT }}/${{ env.DB_NAME }}"
+      # Setp Google Cloud SDK
+      - name: Set up Cloud SDK
+        uses: "google-github-actions/setup-gcloud@v0"
 
-  # infrastructure-setup:
-  #   environment: dev
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v2
+      # Setup Logs dev bucket required for service to run
+      - name: Create Logs dev bucket
+        run: gsutil ls -p ${{ env.PROJECT_ID }} -b "gs://$LOGS_BUCKET_NAME" || gsutil mb -c ${{ env.LOGS_BUCKET_STORAGE_CLASS }} -l ${{ env.LOGS_BUCKET_LOCATION }} -p ${{ env.PROJECT_ID }} "gs://$LOGS_BUCKET_NAME"
 
-  #     # Auth to Google Cloud for Google SDK setup
-  #     - name: Auth to Google Cloud
-  #       uses: "google-github-actions/auth@v0"
-  #       with:
-  #         credentials_json: "${{ secrets.GKE_SA_KEY }}"
+      # Deploy the app
+      - name: Deploy the app to kubernetes
+        run: echo "Deploy the app!"
 
-  #     # # Setp Google Cloud SDK
-  #     - name: Set up Cloud SDK
-  #       uses: "google-github-actions/setup-gcloud@v0"
-
-  #     # Setup Logs dev bucket required for service to run
-  #     - name: Create Logs dev bucket
-  #       run: gsutil ls -p ${{ env.PROJECT_ID }} -b "gs://$LOGS_BUCKET_NAME" || gsutil mb -c ${{ env.LOGS_BUCKET_STORAGE_CLASS }} -l ${{ env.LOGS_BUCKET_LOCATION }} -p ${{ env.PROJECT_ID }} "gs://$LOGS_BUCKET_NAME"
-
-  # application-deployment:
-  #   environment: dev
-  #   needs: [database-migrations, infrastructure-setup]
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v2
-
-  #     # Setup gcloud CLI with deployment service account
-  #     - name: Setup gcloud CLI
-  #       uses: google-github-actions/setup-gcloud@94337306dda8180d967a56932ceb4ddcf01edae7
-  #       with:
-  #         service_account_key: ${{ secrets.GKE_SA_KEY }}
-  #         project_id: ${{ secrets.GKE_PROJECT }}
-
-  #     # Configure Docker to use the gcloud command-line tool as a credential
-  #     # helper for authentication
-  #     - name: Configure docker instance
-  #       run: |-
-  #         gcloud --quiet auth configure-docker
-
-  #     # Get the GKE credentials so we can deploy to the cluster
-  #     - name: Auth to GKE
-  #       uses: google-github-actions/get-gke-credentials@fb08709ba27618c31c09e014e1d8364b02e5042e
-  #       with:
-  #         cluster_name: ${{ env.GKE_CLUSTER }}
-  #         location: ${{ env.GKE_ZONE }}
-  #         credentials: ${{ secrets.GKE_SA_KEY }}
-
-  #     # Build the Docker image
-  #     - name: Build
-  #       run: |-
-  #         docker build \
-  #           --tag "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA" \
-  #           --build-arg GITHUB_SHA="$GITHUB_SHA" \
-  #           --build-arg GITHUB_REF="$GITHUB_REF" \
-  #           .
-
-  #     # Push the Docker image to Google Container Registry
-  #     - name: Publish
-  #       run: |-
-  #         docker push "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA"
-
-  #     # Rollback database changes on app deployment failure
-  #     - name: Rollback on fail
-  #       if: ${{ failure() }}
-  #       uses: liquibase/liquibase-github-action@v3
-  #       with:
-  #         operation: "rollback"
-  #         classpath: "migrations/"
-  #         changeLogFile: "db.changelog-master.yaml"
-  #         tag: ${{ needs.database-migrations.outputs.migration_hash }}
-  #         username: ${{ secrets.DB_USERNAME }}
-  #         password: ${{ secrets.DB_PASSWORD }}
-  #         url: "jdbc:mysql://${{ secrets.DB_HOST }}:${{ secrets.DB_PORT }}/${{ env.DB_NAME }}"
+      # Rollback database changes on app deployment failure
+      - name: Rollback on fail
+        if: ${{ failure() }}
+        uses: liquibase/liquibase-github-action@v3
+        with:
+          operation: "rollback"
+          classpath: "migrations/"
+          changeLogFile: "db.changelog-master.yaml"
+          tag: ${{ needs.database-migrations.outputs.migration_hash }}
+          username: ${{ secrets.DB_USERNAME }}
+          password: ${{ secrets.DB_PASSWORD }}
+          url: "jdbc:mysql://${{ secrets.DB_HOST }}:${{ secrets.DB_PORT }}/${{ env.DB_NAME }}"
