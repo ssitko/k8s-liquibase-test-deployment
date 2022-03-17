@@ -108,7 +108,7 @@ jobs:
 
       # Deploy the app
       - name: Deploy the app to kubernetes
-        run: kubectl get pods -A
+        run: kubectl config current-context
 
       # Rollback database changes on app deployment failure
       - name: Rollback on fail
