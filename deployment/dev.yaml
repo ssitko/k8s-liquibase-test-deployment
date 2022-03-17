@@ -1,0 +1,64 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: golang-http-test-app
+  annotations:
+    beta.cloud.google.com/backend-config: '{"ports": {"80":"golang-http-test-app"}}'
+spec:
+  type: NodePort
+  selector:
+    app: golang-http-test-app
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 8090
+---
+kind: BackendConfig
+apiVersion: cloud.google.com/v1beta1
+metadata:
+  name: golang-http-test-app-backend
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: golang-http-test-app
+  labels:
+    app: golang-http-test-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: golang-http-test-app
+  template:
+    metadata:
+      labels:
+        app: golang-http-test-app
+        tier: backend
+    spec:
+      containers:
+        - name: golang-http-test-app
+          image: gcr.io/pipeline-317919/golang-test:latest
+          ports:
+            - containerPort: 8090
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "200m"
+            limits:
+              memory: "512Mi"
+              cpu: "200m"
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8090
+            initialDelaySeconds: 3
+            periodSeconds: 15
+            timeoutSeconds: 3
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8090
+            initialDelaySeconds: 3
+            periodSeconds: 15
+            timeoutSeconds: 3
