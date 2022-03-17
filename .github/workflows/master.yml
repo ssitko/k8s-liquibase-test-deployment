@@ -116,7 +116,10 @@ jobs:
 
       # Update image hash reference
       - name: Update image hash
-        run: echo ${{ needs.build.outputs.github_sha }}
+        run: sed -i 's/{IMAGE_TAG}/${{ needs.build.outputs.github_sha }}/g' ./deployment/dev.yaml
+
+      - name: Validate correct version
+        run: cat ./deployment/dev.yaml
 
       # Deploy the app
       - name: Deploy the app to kubernetes
