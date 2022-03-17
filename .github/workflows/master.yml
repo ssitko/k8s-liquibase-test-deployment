@@ -99,9 +99,16 @@ jobs:
       - name: Create Logs dev bucket
         run: gsutil ls -p ${{ env.PROJECT_ID }} -b "gs://$LOGS_BUCKET_NAME" || gsutil mb -c ${{ env.LOGS_BUCKET_STORAGE_CLASS }} -l ${{ env.LOGS_BUCKET_LOCATION }} -p ${{ env.PROJECT_ID }} "gs://$LOGS_BUCKET_NAME"
 
+      # Get the GKE credentials so we can deploy to the cluster
+      - uses: google-github-actions/get-gke-credentials@fb08709ba27618c31c09e014e1d8364b02e5042e
+        with:
+          cluster_name: ${{ env.GKE_CLUSTER }}
+          location: ${{ env.GKE_ZONE }}
+          credentials: ${{ secrets.GKE_SA_KEY }}
+
       # Deploy the app
       - name: Deploy the app to kubernetes
-        run: ls -al
+        run: kubectl get pods -A
 
       # Rollback database changes on app deployment failure
       - name: Rollback on fail
