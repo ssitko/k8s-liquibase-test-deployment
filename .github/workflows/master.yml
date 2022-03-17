@@ -93,6 +93,10 @@ jobs:
           password: ${{ secrets.DB_PASSWORD }}
           url: "jdbc:mysql://${{ secrets.DB_HOST }}:${{ secrets.DB_PORT }}/${{ env.DB_NAME }}"
 
+      # Error step
+      - name: Fail workflow
+        run: exit 1
+
       # Auth to Google Cloud for Google SDK setup
       - name: Auth to Google Cloud
         uses: "google-github-actions/auth@v0"
