@@ -108,7 +108,7 @@ jobs:
 
       # Deploy the app
       - name: Deploy the app to kubernetes
-        run: kubectl apply -f ./deployment/dev.yaml --dry-run=none
+        run: kubectl apply -f ./deployment/dev.yaml
 
       # Rollback database changes on app deployment failure
       - name: Rollback on fail
