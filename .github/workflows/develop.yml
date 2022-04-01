@@ -49,22 +49,16 @@ jobs:
       - name: Update image hash
         run: sed -i "s/golang-flux-test:.*/golang-flux-test:$GITHUB_SHA/g" ./deployment/dev.yaml
 
-      - name: Check status
-        run: git status
-
       # Add github email & name
       - name: Add Github email
-        run: git config --global user.email "ssitko@pgs-soft.com"
-
-      - name: Add Github name
-        run: git config --global user.name "ssitko"
+        run: git config --global user.email "ssitko@pgs-soft.com"; git config --global user.name "ssitko"
 
       # Add changes
-      - name: Add current repo changes
+      - name: Add current repo / deployment manifest changes
         run: git add deployment/dev.yaml
 
-      - name: Add HTTP origin URL
-        run: git remote set-url origin https://${{ secrets.GH_USER }}:${{ secrets.GH_PASSWORD }}@github.com/ssitko/k8s-liquibase-test-deployment.git
+      # - name: Add HTTP origin URL
+      #   run: git remote set-url origin https://${{ secrets.GH_USER }}:${{ secrets.GH_PASSWORD }}@github.com/ssitko/k8s-liquibase-test-deployment.git
 
       - name: commit changed files
         run: git commit -m "Auto updating dev.yml k8s manifest"
