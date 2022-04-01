@@ -40,47 +40,35 @@ jobs:
             --build-arg GITHUB_REF="$GITHUB_REF" \
             .
 
-      # Assign the migration tag
-      - name: Assign github sha
-        id: github_sha_assignment
-        run: echo "::set-output name=github_sha::$GITHUB_SHA"
-
       # Push the Docker image to Google Container Registry
       - name: Publish
         run: |-
           docker push "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA"
 
-      # - name: Set outputs
-      #   id: vars
-      #   run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
-
       # Update image tag for develop branch
       - name: Update image hash
         run: sed -i "s/{IMAGE_TAG}/$GITHUB_SHA/g" ./deployment/dev.yaml
 
-      - name: Read k8s manifest file content
-        run: cat deployment/dev.yaml
-
       - name: Check status
         run: git status
 
-      # # Add github email & name
-      # - name: Add Github email
-      #   run: git config --global user.email "ssitko@pgs-soft.com"
+      # Add github email & name
+      - name: Add Github email
+        run: git config --global user.email "ssitko@pgs-soft.com"
 
-      # - name: Add Github name
-      #   run: git config --global user.name "ssitko"
+      - name: Add Github name
+        run: git config --global user.name "ssitko"
 
-      # # Add changes
-      # - name: Add current repo changes
-      #   run: git add deployment/dev.yaml
+      # Add changes
+      - name: Add current repo changes
+        run: git add deployment/dev.yaml
 
-      # - name: Add HTTP origin URL
-      #   run: git remote set-url origin https://${{ secrets.GH_USER }}:${{ secrets.GH_PASSWORD }}@github.com/ssitko/k8s-liquibase-test-deployment.git
+      - name: Add HTTP origin URL
+        run: git remote set-url origin https://${{ secrets.GH_USER }}:${{ secrets.GH_PASSWORD }}@github.com/ssitko/k8s-liquibase-test-deployment.git
 
-      # - name: commit changed files
-      #   run: git commit -m "Auto updating dev.yml k8s manifest"
-      # - name: Fetch from develop
-      #   run: git fetch origin develop
-      # - name: Push code to develop
-      #   run: git push origin HEAD:develop
+      - name: commit changed files
+        run: git commit -m "Auto updating dev.yml k8s manifest"
+      - name: Fetch from develop
+        run: git fetch origin develop
+      - name: Push code to develop
+        run: git push origin HEAD:develop
