@@ -49,6 +49,9 @@ jobs:
       - name: Update image hash
         run: sed -i "s/{IMAGE_TAG}/$GITHUB_SHA/g" ./deployment/dev.yaml
 
+      - name: Verify deployment file modification
+        run: cat ./deployment/dev.yaml
+
       - name: Check status
         run: git status
 
