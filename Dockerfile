@@ -13,4 +13,4 @@ RUN go build
 
 EXPOSE 8090
 
-CMD [ "/kubernetes-gh-k8s" ]
+CMD [ "./kubernetes-gh-k8s" ]
