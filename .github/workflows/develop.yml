@@ -58,8 +58,8 @@ jobs:
       - name: Add current repo changes
         run: git add deployment/dev.yaml
 
-      - name: switching from HTTPS to SSH
-        run: git remote set-url origin git@github.com:ssitko/k8s-liquibase-test-deployment.git
+      - name: Add HTTP origin URL
+        run: git remote add https://${{ secrets.GH_USER }}:${{ secrets.GH_PASSWORD }}@github.com/ssitko/k8s-liquibase-test-deployment.git
       - name: commit changed files
         run: git commit -m "Auto updating dev.yml k8s manifest"
       - name: Fetch from develop
