@@ -59,7 +59,7 @@ jobs:
         run: git add deployment/dev.yaml
 
       - name: Add HTTP origin URL
-        run: git remote add https://${{ secrets.GH_USER }}:${{ secrets.GH_PASSWORD }}@github.com/ssitko/k8s-liquibase-test-deployment.git
+        run: git remote set-url origin https://${{ secrets.GH_USER }}:${{ secrets.GH_PASSWORD }}@github.com/ssitko/k8s-liquibase-test-deployment.git
       - name: commit changed files
         run: git commit -m "Auto updating dev.yml k8s manifest"
       - name: Fetch from develop
