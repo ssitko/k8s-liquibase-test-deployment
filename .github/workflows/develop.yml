@@ -58,6 +58,9 @@ jobs:
       - name: Add Github email
         run: git config --global user.email "ssitko@pgs-soft.com"
 
+      - name: Add Github name
+        run: git config --global user.name "ssitko"
+
       # Add changes
       - name: Add current repo changes
         run: git add deployment/dev.yaml
