@@ -54,6 +54,13 @@ jobs:
       - name: Update image hash
         run: sed -i 's/{IMAGE_TAG}/$GITHUB_SHA/g' ./deployment/dev.yaml
 
-      # Verify file change
-      - name: Check file change
-        run: git status
+      # Add changes
+      - name: Add current repo changes
+        run: git add deployment/dev.yaml
+
+      - name: commit changed files
+        run: git commit -m "Auto updating dev.yml k8s manifest"
+      - name: Fetch from develop
+        run: git fetch origin develop
+      - name: Push code to develop
+        run: git push origin HEAD:develop
