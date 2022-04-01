@@ -58,23 +58,29 @@ jobs:
       - name: Update image hash
         run: sed -i "s/{IMAGE_TAG}/${{ steps.vars.outputs.sha_short }}/g" ./deployment/dev.yaml
 
-      # Add github email & name
-      - name: Add Github email
-        run: git config --global user.email "ssitko@pgs-soft.com"
+      - name: Read k8s manifest file content
+        run: cat deployment/dev.yaml
 
-      - name: Add Github name
-        run: git config --global user.name "ssitko"
+      - name: Check status
+        run: git status
 
-      # Add changes
-      - name: Add current repo changes
-        run: git add deployment/dev.yaml
+      # # Add github email & name
+      # - name: Add Github email
+      #   run: git config --global user.email "ssitko@pgs-soft.com"
 
-      - name: Add HTTP origin URL
-        run: git remote set-url origin https://${{ secrets.GH_USER }}:${{ secrets.GH_PASSWORD }}@github.com/ssitko/k8s-liquibase-test-deployment.git
+      # - name: Add Github name
+      #   run: git config --global user.name "ssitko"
 
-      - name: commit changed files
-        run: git commit -m "Auto updating dev.yml k8s manifest"
-      - name: Fetch from develop
-        run: git fetch origin develop
-      - name: Push code to develop
-        run: git push origin HEAD:develop
+      # # Add changes
+      # - name: Add current repo changes
+      #   run: git add deployment/dev.yaml
+
+      # - name: Add HTTP origin URL
+      #   run: git remote set-url origin https://${{ secrets.GH_USER }}:${{ secrets.GH_PASSWORD }}@github.com/ssitko/k8s-liquibase-test-deployment.git
+
+      # - name: commit changed files
+      #   run: git commit -m "Auto updating dev.yml k8s manifest"
+      # - name: Fetch from develop
+      #   run: git fetch origin develop
+      # - name: Push code to develop
+      #   run: git push origin HEAD:develop
