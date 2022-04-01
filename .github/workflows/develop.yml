@@ -1,0 +1,51 @@
+name: Golang HTTP Server deployment with Liquibase migrations
+
+on:
+  push:
+    branches: [develop]
+
+env:
+  PROJECT_ID: allsaints-cloud-dev
+  IMAGE: golang-flux-test
+
+jobs:
+  build:
+    environment: dev
+    runs-on: ubuntu-latest
+    outputs:
+      github_sha: ${{ steps.github_sha_assignment.outputs.github_sha }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # Setup gcloud CLI with deployment service account
+      - name: Setup gcloud CLI
+        uses: google-github-actions/setup-gcloud@94337306dda8180d967a56932ceb4ddcf01edae7
+        with:
+          service_account_key: ${{ secrets.GKE_SA_KEY }}
+          project_id: allsaints-cloud-dev
+
+      # Configure Docker to use the gcloud command-line tool as a credential
+      # helper for authentication
+      - name: Configure docker instance
+        run: |-
+          gcloud --quiet auth configure-docker
+
+      # Build the Docker image
+      - name: Build
+        run: |-
+          docker build \
+            --tag "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA" \
+            --build-arg GITHUB_SHA="$GITHUB_SHA" \
+            --build-arg GITHUB_REF="$GITHUB_REF" \
+            .
+
+      # Assign the migration tag
+      - name: Assign github sha
+        id: github_sha_assignment
+        run: echo "::set-output name=github_sha::$GITHUB_SHA"
+
+      # Push the Docker image to Google Container Registry
+      - name: Publish
+        run: |-
+          docker push "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA"
