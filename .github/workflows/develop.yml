@@ -52,7 +52,7 @@ jobs:
 
       # Update image tag for develop branch
       - name: Update image hash
-        run: sed -i 's/{IMAGE_TAG}/$GITHUB_SHA/g' ./deployment/dev.yaml
+        run: sed -i "s/{IMAGE_TAG}/$GITHUB_SHA/g" ./deployment/dev.yaml
 
       # Add github email & name
       - name: Add Github email
