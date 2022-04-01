@@ -49,3 +49,11 @@ jobs:
       - name: Publish
         run: |-
           docker push "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA"
+
+      # Update image tag for develop branch
+      - name: Update image hash
+        run: sed -i 's/{IMAGE_TAG}/$GITHUB_SHA/g' ./deployment/dev.yaml
+
+      # Verify file change
+      - name: Check file change
+        run: git status
