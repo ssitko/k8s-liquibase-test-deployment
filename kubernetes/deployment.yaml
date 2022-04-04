@@ -38,7 +38,7 @@ spec:
     spec:
       containers:
         - name: golang-http-test-app
-          image: gcr.io/allsaints-cloud-dev/golang-flux-test:47150a556b3a07b98f0e92b715b15aef390fbc73
+          image: gcr.io/allsaints-cloud-dev/golang-flux-test:1.0.0
           ports:
             - containerPort: 8090
           resources:
