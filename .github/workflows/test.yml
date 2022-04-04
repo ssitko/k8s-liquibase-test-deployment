@@ -22,6 +22,9 @@ jobs:
       - name: Echo Branch name
         run: echo $GITHUB_REF
 
+      - name: Extract merged branch name
+        run: SOURCEBRANCH=$(git log -1 --pretty=%B | awk -F '\\\\n' '{print $1}' |  awk -F '/' '{print $2}' | awk '{print $1}'); echo $SOURCEBRANCH
+
       # # Setup gcloud CLI with deployment service account
       # - name: Setup gcloud CLI
       #   uses: google-github-actions/setup-gcloud@94337306dda8180d967a56932ceb4ddcf01edae7
