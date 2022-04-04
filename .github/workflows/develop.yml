@@ -1,4 +1,4 @@
-name: Golang HTTP Server deployment with Liquibase migrations
+name: Golang HTTP Server deployment
 
 on:
   push:
