@@ -18,10 +18,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Extract release branch version tag
-        run: echo "RELEASE_VERSION_TAG=$(git log -1 --pretty=%B)" >> $GITHUB_ENV
-
-      - name: Validate that release tag was assigned properly
-        run: echo $RELEASE_VERSION_TAG
+        run: echo $GITHUB_REF
 
       # # Setup gcloud CLI with deployment service account
       # - name: Setup gcloud CLI
