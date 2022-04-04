@@ -18,7 +18,13 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Extract release branch version tag
-        run: export SOURCEBRANCH=$(git log -1 --pretty=%B | awk -F '\\\\n' '{print $1}' |  awk -F '/' '{print $3}' | awk '{print $1}'); echo $SOURCEBRANCH
+        id: release_version_tag_assignment
+        # run: export SOURCEBRANCH=$(git log -1 --pretty=%B | awk -F '\\\\n' '{print $1}' |  awk -F '/' '{print $3}' | awk '{print $1}'); echo $SOURCEBRANCH
+
+        run: echo '::set-output name=RELEASE_VERSION_TAG::$(git log -1 --pretty=%B | awk -F '\\\\n' '{print $1}' |  awk -F '/' '{print $3}' | awk '{print $1}')'
+
+      - name: Print release version tag value
+        run: echo ${{ steps.release_version_tag_assignment.outputs.RELEASE_VERSION_TAG }}
 
       # # Setup gcloud CLI with deployment service account
       # - name: Setup gcloud CLI
