@@ -13,17 +13,15 @@ jobs:
   build:
     environment: dev
     runs-on: ubuntu-latest
-    outputs:
-      github_sha: ${{ steps.github_sha_assignment.outputs.github_sha }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Echo Branch name
-        run: echo $GITHUB_REF
+      - name: Extract release branch version tag
+        run: echo "RELEASE_VERSION_TAG=$(git log -1 --pretty=%B | sed 's:.*/::')" >> $GITHUB_ENV
 
-      - name: Extract merged branch name
-        run: git log -1 --pretty=%B
+      - name: Validate that release tag was assigned properly
+        run: echo $RELEASE_VERSION_TAG
 
       # # Setup gcloud CLI with deployment service account
       # - name: Setup gcloud CLI
