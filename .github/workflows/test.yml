@@ -39,7 +39,7 @@ jobs:
       - name: Build
         run: |-
           docker build \
-            --tag "gcr.io/$PROJECT_ID/$IMAGE:$RELEASE_VERSION_TAG" \
+            --tag "gcr.io/$PROJECT_ID/$IMAGE:${{ steps.release_version_tag_assignment.outputs.RELEASE_VERSION_TAG }}" \
             --build-arg GITHUB_SHA="$GITHUB_SHA" \
             --build-arg GITHUB_REF="$GITHUB_REF" \
             .
@@ -47,11 +47,11 @@ jobs:
       # Push the Docker image to Google Container Registry
       - name: Publish
         run: |-
-          docker push "gcr.io/$PROJECT_ID/$IMAGE:$RELEASE_VERSION_TAG"
+          docker push "gcr.io/$PROJECT_ID/$IMAGE:${{ steps.release_version_tag_assignment.outputs.RELEASE_VERSION_TAG }}"
 
       # Update image tag for develop branch
       - name: Update image hash
-        run: sed -i "s/golang-flux-test:.*/golang-flux-test:$RELEASE_VERSION_TAG/g" ./kubernetes/deployment.yaml
+        run: sed -i "s/golang-flux-test:.*/golang-flux-test:${{ steps.release_version_tag_assignment.outputs.RELEASE_VERSION_TAG }}/g" ./kubernetes/deployment.yaml
 
       # Add github email & name
       - name: Add Github email
