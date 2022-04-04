@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Extract release branch version tag
-        run: echo $GITHUB_HEAD_REF
+        run: export LATESTLOG=$(git log -1 --pretty=%B); export SOURCEBRANCH=$(echo $LATESTLOG | awk -F '\\\\n' '{print $1}' |  awk -F '/' '{print $2}' | awk '{print $1}'); echo $SOURCEBRANCH
 
       # # Setup gcloud CLI with deployment service account
       # - name: Setup gcloud CLI
