@@ -18,7 +18,7 @@ func headers(w http.ResponseWriter, req *http.Request) {
 }
 
 func healthz(w http.ResponseWriter, req *http.Request) {
-	fmt.Fprintf(w, "Healthy!")
+	fmt.Fprintf(w, "Healthy response!")
 }
 
 func main() {
