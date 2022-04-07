@@ -37,7 +37,8 @@ jobs:
 
       # Check if image with requested version exists
       - name: Validate image version if exists
-        run: gcloud container images describe ${{ env.IMAGE }}:${{ steps.release_version_tag_assignment.outputs.RELEASE_VERSION_TAG }} &> /dev/null
+        # run: gcloud container images describe ${{ env.IMAGE }}:${{ steps.release_version_tag_assignment.outputs.RELEASE_VERSION_TAG }} &> /dev/null
+        run: gcloud container images describe gcr.io/allsaints-cloud-dev/golang-flux-test:1.0.2
 
       # # Build the Docker image
       # - name: Build
