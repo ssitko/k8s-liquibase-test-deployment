@@ -39,40 +39,26 @@ jobs:
       - name: Validate image version if exists
         run: gcloud container images describe gcr.io/${{ env.PROJECT_ID }}/${{ env.IMAGE }}:${{ steps.release_version_tag_assignment.outputs.RELEASE_VERSION_TAG }}
 
-      # # Build the Docker image
-      # - name: Build
-      #   run: |-
-      #     docker build \
-      #       --tag "gcr.io/$PROJECT_ID/$IMAGE:${{ steps.release_version_tag_assignment.outputs.RELEASE_VERSION_TAG }}" \
-      #       --build-arg GITHUB_SHA="$GITHUB_SHA" \
-      #       --build-arg GITHUB_REF="$GITHUB_REF" \
-      #       .
-
-      # # Push the Docker image to Google Container Registry
-      # - name: Publish
-      #   run: |-
-      #     docker push "gcr.io/$PROJECT_ID/$IMAGE:${{ steps.release_version_tag_assignment.outputs.RELEASE_VERSION_TAG }}"
-
       # # Update image tag for develop branch
-      # - name: Update image hash
-      #   run: sed -i "s/golang-flux-test:.*/golang-flux-test:${{ steps.release_version_tag_assignment.outputs.RELEASE_VERSION_TAG }}/g" ./kubernetes/deployment.yaml
+      - name: Update image hash
+        run: sed -i "s/golang-flux-test:.*/golang-flux-test:${{ steps.release_version_tag_assignment.outputs.RELEASE_VERSION_TAG }}/g" ./kubernetes/deployment.yaml
 
       # # Add github email & name
-      # - name: Add Github email
-      #   run: git config --global user.email "ssitko@pgs-soft.com"; git config --global user.name "ssitko"
+      - name: Add Github email
+        run: git config --global user.email "ssitko@pgs-soft.com"; git config --global user.name "ssitko"
 
       # # Add changes
-      # - name: Add current repo / deployment manifest changes
-      #   run: git add kubernetes/deployment.yaml
+      - name: Add current repo / deployment manifest changes
+        run: git add kubernetes/deployment.yaml
 
       # # Commit changes
-      # - name: Commit changed manifest files
-      #   run: git commit -m "Auto updating test.yml k8s manifest"
+      - name: Commit changed manifest files
+        run: git commit -m "Auto updating deployment.yml k8s manifest"
 
-      # # Fetch test branch
-      # - name: Fetch from test
-      #   run: git fetch origin test
+      # Fetch staging branch
+      - name: Fetch from staging
+        run: git fetch origin staging
 
-      # # Push updated manifest
-      # - name: Push code to test
-      #   run: git push origin HEAD:test
+      # Push updated manifest
+      - name: Push code to staging
+        run: git push origin HEAD:staging
