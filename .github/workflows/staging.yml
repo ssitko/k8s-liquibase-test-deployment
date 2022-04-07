@@ -37,8 +37,7 @@ jobs:
 
       # Check if image with requested version exists
       - name: Validate image version if exists
-        # run: docker image inspect ${{ env.IMAGE }}:${{ steps.release_version_tag_assignment.outputs.RELEASE_VERSION_TAG }} &> /dev/null
-        run: gcloud container images list
+        run: gcloud container images describe ${{ env.IMAGE }}:${{ steps.release_version_tag_assignment.outputs.RELEASE_VERSION_TAG }} &> /dev/null
 
       # # Build the Docker image
       # - name: Build
